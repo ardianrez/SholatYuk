@@ -1,0 +1,32 @@
+{% extends "kerangka.html" %}
+
+{% block title %}
+    Penunjuk Arah Kiblat
+{% endblock %}
+
+{% block main %}
+
+<p>Click the button to get your qibla direction (in degrees of heading). Don't forget to allow your browser to access your location</p>
+
+<button onclick="getQibla()">Get qibla direction</button>
+
+<h2 id="demo">  </h2>
+
+<script>
+var x = document.getElementById("demo");
+
+function getQibla() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else {
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+
+function showPosition(position) {
+    var heading = Math.atan2((Math.sin((39.8262*Math.PI/180)-(position.coords.longitude*Math.PI/180)) * Math.cos(21.4225*Math.PI/180)), (Math.cos(position.coords.latitude*Math.PI/180)*Math.sin(21.4225*Math.PI/180)-Math.sin(position.coords.latitude*Math.PI/180)*Math.cos(21.4225*Math.PI/180)*Math.cos((39.8262*Math.PI/180)-(position.coords.longitude*Math.PI/180))))*(180/Math.PI);
+    x.innerHTML = "Qibla heading is : " + heading.toFixed(2) + " degree from the north towards east";
+}
+</script>
+
+{% endblock %}

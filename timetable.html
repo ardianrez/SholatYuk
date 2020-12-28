@@ -1,0 +1,104 @@
+{% extends "kerangka.html" %}
+
+{% block title %}
+    Monthly Timetable
+{% endblock %}
+
+{% block main %}
+
+<p class = "centered">
+    Prayer Times in :
+</p>
+<h4 class = "centered">
+    {{ address }}
+</h4>
+<h2 class = "centered">
+    {{ jd[15].date.gregorian.month.en }} {{ jd[15].date.gregorian.year }}
+</h2>
+
+<table class = "table floatleft">
+
+    <thead>
+        <tr class = "thead-dark">
+            <th>Date ({{ jd[15].date.gregorian.month.en }}) </th>
+            <th>Fajr</th>
+            <th>Zuhr</th>
+            <th>Asr</th>
+            <th>Maghrib</th>
+            <th>Isha'</th>
+            <th>Date (Hijri Calendar) </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for i in range(n) %}
+            {% if date == i+1 %}
+                <tr class = "table-cell">
+                    <td class="table-success">{{ i+1 }}</td>
+                    <td class="table-success">{{ jd[i].timings.Fajr[:5] }}</td>
+                    <td class="table-success">{{ jd[i].timings.Dhuhr[:5] }}</td>
+                    <td class="table-success">{{ jd[i].timings.Asr[:5] }}</td>
+                    <td class="table-success">{{ jd[i].timings.Maghrib[:5] }}</td>
+                    <td class="table-success">{{ jd[i].timings.Isha[:5] }}</td>
+                    <td class="table-success">{{ jd[i].date.hijri.day }} {{ jd[i].date.hijri.month.en }} {{ jd[i].date.hijri.year }}</td>
+                </tr>
+            {% else %}
+                <tr class = "table-cell">
+                    <td>{{ i+1 }}</td>
+                    <td>{{ jd[i].timings.Fajr[:5] }}</td>
+                    <td>{{ jd[i].timings.Dhuhr[:5] }}</td>
+                    <td>{{ jd[i].timings.Asr[:5] }}</td>
+                    <td>{{ jd[i].timings.Maghrib[:5] }}</td>
+                    <td>{{ jd[i].timings.Isha[:5] }}</td>
+                    <td>{{ jd[i].date.hijri.day }} {{ jd[i].date.hijri.month.en }} {{ jd[i].date.hijri.year }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+
+</table>
+<p class = "method">
+    *Calculation method : {{ jd[15].meta.method.name }}
+</p>
+
+
+<div class="clock">
+   <div class="hour">
+     <div class="hr" id="hr"></div>
+   </div>
+   <!-- <button class=  id="nine">9</button>
+    <button class= -bg" id="divide">/</button>
+    <button class=" ary" id="four">4</button>-->
+   <div class="min">
+     <div class="mn" id="mn"></div>
+   </div>
+   <div class="sec">
+     <div class="sc" id="sc"></div>
+   </div>
+ </div>
+
+<script>
+
+ const deg = 6;
+const hr = document.querySelector("#hr");
+const mn = document.querySelector("#mn");
+const sc = document.querySelector("#sc");
+  /*height: 3px;
+  background-color: #fb7454;
+  opacity: 0.8;*/
+setInterval(() => {
+  let day = new Date();
+  let hh = day.getHours() * 30; //360deg / 12 hour => 30
+  let mm = day.getMinutes() * deg;
+  let ss = day.getSeconds() * deg;
+  /*height: 3px;
+  background-color: #fb7454;
+  opacity: 0.8;*/
+  hr.style.transform = `rotateZ(${hh + mm / 12}deg)`;
+  mn.style.transform = `rotateZ(${mm}deg)`;
+  sc.style.transform = `rotateZ(${ss}deg)`;
+});
+
+</script>
+
+{% endblock %}

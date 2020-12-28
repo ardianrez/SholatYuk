@@ -1,0 +1,285 @@
+{% extends "kerangka.html" %}
+
+{% block title %}
+    Today's timetable
+{% endblock %}
+
+{% block main %}
+
+<p class = "centered">
+    Prayer Times in :
+</p>
+<h4 class = "centered blue">
+    {{ address }}
+</h4>
+<h2 class = "centered">
+    {{ date }} {{ monthname }} {{ year }}
+</h2>
+
+<p>
+<br>
+</p>
+
+<div class = "centered">
+<canvas id="subuh" width="150" height="150" style="background-color:#fff"> </canvas>
+<canvas id="zuhur" width="150" height="150" style="background-color:#fff"> </canvas>
+<canvas id="ashar" width="150" height="150" style="background-color:#fff"> </canvas>
+<canvas id="maghrib" width="150" height="150" style="background-color:#fff"> </canvas>
+<canvas id="isya" width="150" height="150" style="background-color:#fff"> </canvas>
+</div>
+
+<div class = "centered">
+<canvas id="subuht" width="150" height="40" style="background-color:#fff"> </canvas>
+<canvas id="zuhurt" width="150" height="40" style="background-color:#fff"> </canvas>
+<canvas id="ashart" width="150" height="40" style="background-color:#fff"> </canvas>
+<canvas id="maghribt" width="150" height="40" style="background-color:#fff"> </canvas>
+<canvas id="isyat" width="150" height="40" style="background-color:#fff"> </canvas>
+</div>
+
+<div class = "centered">
+    <canvas id="agora" width="150" height="150" style="background-color:#fff"> </canvas>
+</div>
+
+<div class = "centered red">
+    Now
+</div>
+
+<p>
+<br>
+</p>
+
+<p>
+<br>
+</p>
+
+<p class = "method">
+    *Calculation method : {{ method }}
+</p>
+
+<script>
+    var subuh = document.getElementById("subuh");
+    var ctxs = subuh.getContext("2d");
+    var radiuss = subuh.height / 2;
+    var hours = '{{ fajr1 | tojson }}';
+    var minutes = '{{ fajr2 | tojson }}';
+    ctxs.translate(radiuss, radiuss);
+    radiuss = radiuss * 0.90;
+    drawClock(ctxs, radiuss, hours, minutes);
+
+    var zuhur = document.getElementById("zuhur");
+    var ctxz = zuhur.getContext("2d");
+    var radiusz = zuhur.height / 2;
+    var hourz = '{{ zuhr1 | tojson }}';
+    var minutez = '{{ zuhr2 | tojson }}';
+    ctxz.translate(radiusz, radiusz);
+    radiusz = radiusz * 0.90;
+    drawClock(ctxz, radiusz, hourz, minutez);
+
+    var ashar = document.getElementById("ashar");
+    var ctxa = ashar.getContext("2d");
+    var radiusa = ashar.height / 2;
+    var houra = '{{ asr1 | tojson }}';
+    var minutea = '{{ asr2 | tojson }}';
+    ctxa.translate(radiusa, radiusa);
+    radiusa = radiusa * 0.90;
+    drawClock(ctxa, radiusa, houra, minutea);
+
+    var maghrib = document.getElementById("maghrib");
+    var ctxm = maghrib.getContext("2d");
+    var radiusm = maghrib.height / 2;
+    var hourm = '{{ magh1 | tojson }}';
+    var minutem = '{{ magh2 | tojson }}';
+    ctxm.translate(radiusm, radiusm);
+    radiusm = radiusm * 0.90;
+    drawClock(ctxm, radiusm, hourm, minutem);
+
+    var isya = document.getElementById("isya");
+    var ctxi = isya.getContext("2d");
+    var radiusi = isya.height / 2;
+    var houri = '{{ isy1 | tojson }}';
+    var minutei = '{{ isy2 | tojson }}';
+    ctxi.translate(radiusi, radiusi);
+    radiusi = radiusi * 0.90;
+    drawClock(ctxi, radiusi, houri, minutei);
+
+    var canvas = document.getElementById("agora");
+    var ctxAg = canvas.getContext("2d");
+    var radiusAg = canvas.height / 2;
+    ctxAg.translate(radiusAg, radiusAg);
+    radiusAg = radiusAg * 0.90;
+    setInterval(gambarJam, 1000);
+
+    var c1 = document.getElementById("subuht");
+    var ctx1 = c1.getContext("2d");
+    ctx1.font = "20px Arial";
+    ctx1.textAlign='center';
+    ctx1.fillText("Fajr",75,30);
+
+    var c2 = document.getElementById("zuhurt");
+    var ctx2 = c2.getContext("2d");
+    ctx2.font = "20px Arial";
+    ctx2.textAlign='center';
+    ctx2.fillText("Zuhr",75,30);
+
+    var c3 = document.getElementById("ashart");
+    var ctx3 = c3.getContext("2d");
+    ctx3.font = "20px Arial";
+    ctx3.textAlign='center';
+    ctx3.fillText("Asr",75,30);
+
+    var c4 = document.getElementById("maghribt");
+    var ctx4 = c4.getContext("2d");
+    ctx4.font = "20px Arial";
+    ctx4.textAlign='center';
+    ctx4.fillText("Maghrib",75,30);
+
+    var c5 = document.getElementById("isyat");
+    var ctx5 = c5.getContext("2d");
+    ctx5.font = "20px Arial";
+    ctx5.textAlign='center';
+    ctx5.fillText("Isya",75,30);
+
+    function drawClock(ctx, radius, hour, minute) {
+      drawFace(ctx, radius);
+      drawNumbers(ctx, radius);
+      drawTime(ctx, radius, hour, minute);
+    }
+
+    function drawFace(ctx, radius) {
+      var grad;
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, 2*Math.PI);
+      ctx.fillStyle = 'white';
+      ctx.fill();
+      grad = ctx.createRadialGradient(0,0,radius*0.95, 0,0,radius*1.05);
+      grad.addColorStop(0, '#333');
+      grad.addColorStop(0.5, 'white');
+      grad.addColorStop(1, '#333');
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = radius*0.1;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(0, 0, radius*0.1, 0, 2*Math.PI);
+      ctx.fillStyle = '#333';
+      ctx.fill();
+    }
+
+    function drawNumbers(ctx, radius) {
+      var ang;
+      var num;
+      ctx.font = radius*0.15 + "px arial";
+      ctx.textBaseline="middle";
+      ctx.textAlign="center";
+      for(num = 1; num < 13; num++){
+        ang = num * Math.PI / 6;
+        ctx.rotate(ang);
+        ctx.translate(0, -radius*0.85);
+        ctx.rotate(-ang);
+        ctx.fillText(num.toString(), 0, 0);
+        ctx.rotate(ang);
+        ctx.translate(0, radius*0.85);
+        ctx.rotate(-ang);
+      }
+    }
+
+    function drawTime(ctx, radius, hour, minute){
+        var second = 0;
+        //hour
+        hour=hour%12;
+        hour=(hour*Math.PI/6)+
+        (minute*Math.PI/(6*60))+
+        (second*Math.PI/(360*60));
+        drawHand(ctx, hour, radius*0.5, radius*0.07);
+        //minute
+        minute=(minute*Math.PI/30)+(second*Math.PI/(30*60));
+        drawHand(ctx, minute, radius*0.8, radius*0.07);
+        // second
+        drawHand(ctx, second, radius*0, radius*0.02);
+    }
+
+    function drawHand(ctx, pos, length, width) {
+        ctx.beginPath();
+        ctx.lineWidth = width;
+        ctx.lineCap = "round";
+        ctx.moveTo(0,0);
+        ctx.rotate(pos);
+        ctx.lineTo(0, -length);
+        ctx.stroke();
+        ctx.rotate(-pos);
+    }
+
+    function gambarJam() {
+      gambarMuka(ctxAg, radiusAg);
+      gambarAngka(ctxAg, radiusAg);
+      gambarWaktu(ctxAg, radiusAg);
+    }
+
+    function gambarMuka(ctx, radius) {
+      var grad;
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, 2*Math.PI);
+      ctx.fillStyle = '#90EE90';
+      ctx.fill();
+      grad = ctx.createRadialGradient(0,0,radius*0.95, 0,0,radius*1.05);
+      grad.addColorStop(0, '#333');
+      grad.addColorStop(0.5, 'white');
+      grad.addColorStop(1, '#333');
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = radius*0.1;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(0, 0, radius*0.1, 0, 2*Math.PI);
+      ctx.fillStyle = '#333';
+      ctx.fill();
+    }
+
+    function gambarAngka(ctx, radius) {
+      var ang;
+      var num;
+      ctx.font = radius*0.15 + "px arial";
+      ctx.textBaseline="middle";
+      ctx.textAlign="center";
+      for(num = 1; num < 13; num++){
+        ang = num * Math.PI / 6;
+        ctx.rotate(ang);
+        ctx.translate(0, -radius*0.85);
+        ctx.rotate(-ang);
+        ctx.fillText(num.toString(), 0, 0);
+        ctx.rotate(ang);
+        ctx.translate(0, radius*0.85);
+        ctx.rotate(-ang);
+      }
+    }
+
+    function gambarWaktu(ctx, radius){
+        var now = new Date();
+        var hour = now.getHours();
+        var minute = now.getMinutes();
+        var second = now.getSeconds();
+        //hour
+        hour=hour%12;
+        hour=(hour*Math.PI/6)+
+        (minute*Math.PI/(6*60))+
+        (second*Math.PI/(360*60));
+        gambarJarum(ctx, hour, radius*0.5, radius*0.07);
+        //minute
+        minute=(minute*Math.PI/30)+(second*Math.PI/(30*60));
+        gambarJarum(ctx, minute, radius*0.8, radius*0.07);
+        // second
+        second=(second*Math.PI/30);
+        gambarJarum(ctx, second, radius*0.9, radius*0.02);
+    }
+
+    function gambarJarum(ctx, pos, length, width) {
+        ctx.beginPath();
+        ctx.lineWidth = width;
+        ctx.lineCap = "round";
+        ctx.moveTo(0,0);
+        ctx.rotate(pos);
+        ctx.lineTo(0, -length);
+        ctx.stroke();
+        ctx.rotate(-pos);
+    }
+</script>
+
+{% endblock %}
